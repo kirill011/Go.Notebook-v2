@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	var startNode []node
+	var startNode []*node
 
 	for {
 
@@ -28,10 +28,10 @@ func main() {
 
 		case 1:
 
-			startNode = append(startNode, *new(node))
+			startNode = append(startNode, new(node))
 			startNode[len(startNode)-1].Number = len(startNode) - 1
 
-			add(&startNode[len(startNode)-1])
+			add(startNode[len(startNode)-1])
 
 		case 2:
 
@@ -65,7 +65,7 @@ type node struct {
 	PhoneNumber string
 } //Создание структуры 1 ноды
 
-func printData(startNode []node) {
+func printData(startNode []*node) {
 
 	fmt.Println("---------------------------------------------------------------")
 	fmt.Println("|Номер|                 Имя|             Фамилия|Номер телефона|")
@@ -101,7 +101,7 @@ func add(Node *node) {
 
 }
 
-func deleteNode(startNode []node) []node {
+func deleteNode(startNode []*node) []*node {
 
 	var deleteNum int
 
@@ -112,7 +112,7 @@ func deleteNode(startNode []node) []node {
 
 		if num > deleteNum {
 
-			tmp := &startNode[num]
+			tmp := startNode[num]
 			tmp.Number = tmp.Number - 1
 
 		}
@@ -122,9 +122,10 @@ func deleteNode(startNode []node) []node {
 
 }
 
-func save(startNode []node) {
+func save(startNode []*node) {
 
 	var fileName string
+	var tmp []node
 
 	fmt.Println("Введите имя файла")
 	fmt.Fscan(os.Stdin, &fileName)
@@ -132,16 +133,27 @@ func save(startNode []node) {
 	fileName += ".json"
 	file, _ := os.Create(fileName)
 
-	jsonData, _ := json.Marshal(startNode)
+	for _, i := range startNode {
+		tmp = append(tmp, *i)
+	}
+
+	jsonData, _ := json.Marshal(tmp)
 	file.Write(jsonData)
 
 	file.Close()
 
 }
 
-func load(startNode []node) []node {
+func load(startNode []*node) []*node {
 
 	var fileName string
+	var tmpSlice []node
+
+	for _, i := range startNode {
+
+		tmpSlice = append(tmpSlice, *i)
+
+	}
 
 	fmt.Println("Введите имя файла из которого считать: ")
 	fmt.Fscan(os.Stdin, &fileName)
@@ -167,10 +179,14 @@ func load(startNode []node) []node {
 		tmp = append(tmp, buf[:num]...)
 	}
 
-	err = json.Unmarshal(tmp, &startNode)
+	err = json.Unmarshal(tmp, &tmpSlice)
 
 	if err != nil {
 		panic(err)
+	}
+
+	for i, _ := range tmpSlice {
+		startNode = append(startNode, &tmpSlice[i])
 	}
 
 	return startNode

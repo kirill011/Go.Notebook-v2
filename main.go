@@ -40,11 +40,10 @@ func main() {
 		case 3:
 
 			save(startNode)
-			readKey = 10 //костыль, без него надпись введите имя файла появляется снова и снова
 
 		case 4:
+
 			startNode = load(startNode)
-			readKey = 10
 
 		case 5:
 
@@ -128,7 +127,7 @@ func save(startNode []*node) {
 	var tmp []node
 
 	fmt.Println("Введите имя файла")
-	fmt.Fscan(os.Stdin, &fileName)
+	fmt.Fscanln(os.Stdin, &fileName)
 
 	fileName += ".json"
 	file, _ := os.Create(fileName)
@@ -156,7 +155,7 @@ func load(startNode []*node) []*node {
 	}
 
 	fmt.Println("Введите имя файла из которого считать: ")
-	fmt.Fscan(os.Stdin, &fileName)
+	fmt.Fscanln(os.Stdin, &fileName)
 
 	file, err := os.Open(fileName)
 
@@ -178,6 +177,8 @@ func load(startNode []*node) []*node {
 		}
 		tmp = append(tmp, buf[:num]...)
 	}
+
+	file.Close()
 
 	err = json.Unmarshal(tmp, &tmpSlice)
 

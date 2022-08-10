@@ -36,6 +36,7 @@ func main() {
 		case 2:
 
 			startNode = deleteNode(startNode)
+			fixNumber(startNode)
 
 		case 3:
 
@@ -107,16 +108,6 @@ func deleteNode(startNode []*node) []*node {
 	fmt.Println("Введите номер записи для удаления")
 	fmt.Fscanln(os.Stdin, &deleteNum)
 
-	for num, _ := range startNode {
-
-		if num > deleteNum {
-
-			tmp := startNode[num]
-			tmp.Number = tmp.Number - 1
-
-		}
-	}
-
 	return append(startNode[:deleteNum], startNode[deleteNum+1:]...)
 
 }
@@ -157,7 +148,7 @@ func load(startNode []*node) []*node {
 	fmt.Println("Введите имя файла из которого считать: ")
 	fmt.Fscanln(os.Stdin, &fileName)
 
-	file, err := os.Open(fileName)
+	file, err := os.Open(fileName + ".json")
 
 	if err != nil {
 
@@ -190,5 +181,16 @@ func load(startNode []*node) []*node {
 		startNode = append(startNode, &tmpSlice[i])
 	}
 
+	fixNumber(startNode)
+
 	return startNode
+}
+
+func fixNumber(startNode []*node) {
+
+	for i, Node := range startNode {
+
+		Node.Number = i
+
+	}
 }
